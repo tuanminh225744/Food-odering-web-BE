@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 
+// Định nghĩa các schema cho các collection trong MongoDB
+// Food Schema
 const foodSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -23,11 +25,11 @@ const foodSchema = new mongoose.Schema({
     },
 });
 
-
+// Order Schema
 const orderSchema = new mongoose.Schema({
-    customerID: {
+    userID: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Customer',
+        ref: 'User',
         required: true,
     },
     items: [
@@ -53,16 +55,24 @@ const orderSchema = new mongoose.Schema({
     },
 });
 
-
-const customerSchema = new mongoose.Schema({
+// User Schema
+const userSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
+        minlength: 3,
+        maxlength: 20,
+        unique: true,
     },
     email: {
         type: String,
         required: true,
         unique: true,
+    },
+    password: {
+        type: String,
+        required: true,
+        minlength: 6,
     },
     phoneNumber: {
         type: String,
@@ -74,11 +84,11 @@ const customerSchema = new mongoose.Schema({
     },
 });
 
-
+// Cart Schema
 const cartSchema = new mongoose.Schema({
-    customerID: {
+    userID: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Customer',
+        ref: 'User',
         required: true,
     },
     items: [
@@ -99,11 +109,11 @@ const cartSchema = new mongoose.Schema({
 const Cart = mongoose.model('Cart', cartSchema);
 const Food = mongoose.model('Food', foodSchema);
 const Order = mongoose.model('Order', orderSchema);
-const Customer = mongoose.model('Customer', customerSchema);
+const User = mongoose.model('User', userSchema);
 
 module.exports = {
     Food,
     Order,
-    Customer,
+    User,
     Cart,
 };

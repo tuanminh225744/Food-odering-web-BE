@@ -1,11 +1,10 @@
-const { Food, Order, Customer, Cart } = require('../model/model.js');
-const router = require('express').Router();
+const { Food, Order, User, Cart } = require('../models/model.js');
 
 const orderController = {
     // Lấy tất cả đơn hàng
     getAllOrders: async (req, res) => {
         try {
-            const orders = await Order.find().populate('customerId').populate('foodId');
+            const orders = await Order.find().populate('userID').populate('items.foodId');
             res.status(200).json(orders);
         } catch (error) {
             res.status(500).json({ message: error.message });
@@ -15,7 +14,7 @@ const orderController = {
     // Lấy đơn hàng theo ID
     getOrderById: async (req, res) => {
         try {
-            const order = await Order.findById(req.params.id).populate('customerId').populate('foodId');
+            const order = await Order.findById(req.params.id).populate('userID').populate('items.foodId');
             if (!order) return res.status(404).json({ message: 'Order not found' });
             res.status(200).json(order);
         } catch (error) {
@@ -26,10 +25,9 @@ const orderController = {
     // Tạo đơn hàng mới
     createOrder: async (req, res) => {
         const order = new Order({
-            customerId: req.body.customerId,
-            foodId: req.body.foodId,
-            quantity: req.body.quantity,
-            totalPrice: req.body.totalPrice,
+            userID: req.body.userID,
+            items: req.body.items,
+            totalAmount: req.body.totalAmount,
             status: req.body.status,
         });
 
@@ -44,7 +42,7 @@ const orderController = {
     // Cập nhật đơn hàng
     updateOrder: async (req, res) => {
         try {
-            const updatedOrder = await Order.findByIdAndUpdate(req.params.id, req.body, { new: true }).populate('customerId').populate('foodId');
+            const updatedOrder = await Order.findByIdAndUpdate(req.params.id, req.body, { new: true }).populate('userID').populate('items.foodId');
             if (!updatedOrder) return res.status(404).json({ message: 'Order not found' });
             res.status(200).json(updatedOrder);
         } catch (error) {
@@ -63,4 +61,5 @@ const orderController = {
         }
     },
 }
+
 module.exports = orderController;

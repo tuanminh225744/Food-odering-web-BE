@@ -1,4 +1,4 @@
-const { Food, Cart, Customer, Order } = require('../model/model.js');
+const { Food, Cart, User, Order } = require('../models/model.js');
 
 const foodController = {
     // Lấy tất cả món ăn

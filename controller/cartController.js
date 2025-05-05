@@ -1,11 +1,11 @@
-const { Food, Order, Customer, Cart } = require('../model/model.js');
+const { Food, Order, User, Cart } = require('../models/model.js');
 
 const cartController = {
 
     // Lấy tất cả giỏ hàng
     getAllCarts: async (req, res) => {
         try {
-            const carts = await Cart.find().populate('customerID').populate('items.foodId');
+            const carts = await Cart.find().populate('userID').populate('items.foodId');
             res.status(200).json(carts);
         } catch (error) {
             res.status(500).json({ message: error.message });
@@ -15,7 +15,7 @@ const cartController = {
     // Lấy giỏ hàng theo ID
     getCartById: async (req, res) => {
         try {
-            const cart = await Cart.findById(req.params.id).populate('customerID').populate('items.foodId');
+            const cart = await Cart.findById(req.params.id).populate('userID').populate('items.foodId');
             if (!cart) return res.status(404).json({ message: 'Cart not found' });
             res.status(200).json(cart);
         } catch (error) {
@@ -26,7 +26,7 @@ const cartController = {
     // Tạo giỏ hàng mới
     createCart: async (req, res) => {
         const cart = new Cart({
-            customerID: req.body.customerID,
+            userID: req.body.userID,
             items: req.body.items,
         });
 
@@ -41,7 +41,7 @@ const cartController = {
     // Cập nhật giỏ hàng
     updateCart: async (req, res) => {
         try {
-            const updatedCart = await Cart.findByIdAndUpdate(req.params.id, req.body, { new: true }).populate('customerID').populate('items.foodId');
+            const updatedCart = await Cart.findByIdAndUpdate(req.params.id, req.body, { new: true }).populate('userID').populate('items.foodId');
             if (!updatedCart) return res.status(404).json({ message: 'Cart not found' });
             res.status(200).json(updatedCart);
         } catch (error) {
