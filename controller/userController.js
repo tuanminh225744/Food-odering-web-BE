@@ -4,7 +4,7 @@ const userController = {
     // Lấy tất cả người dùng
     getAllUsers: async (req, res) => {
         try {
-            const users = await User.find().populate('cartId').populate('orders.foodId');
+            const users = await User.find();
             res.status(200).json(users);
         } catch (error) {
             res.status(500).json({ message: error.message });
@@ -14,7 +14,7 @@ const userController = {
     // Lấy người dùng theo ID
     getUserById: async (req, res) => {
         try {
-            const user = await User.findById(req.params.id).populate('cartId').populate('orders.foodId');
+            const user = await User.findById(req.params.id);
             if (!user) return res.status(404).json({ message: 'User not found' });
             res.status(200).json(user);
         } catch (error) {
@@ -24,27 +24,36 @@ const userController = {
 
     // Tạo người dùng mới
     createUser: async (req, res) => {
-        const user = new User({
-            name: req.body.name,
-            email: req.body.email,
-            phoneNumber: req.body.phoneNumber,
-            address: req.body.address,
-            cartId: req.body.cartId,
-            orders: req.body.orders,
-        });
-
         try {
-            const savedUser = await user.save();
+            console.log('Request body:', req.body); // Log dữ liệu nhận được từ client
+
+            // Kiểm tra dữ liệu đầu vào
+            if (!req.body.username || !req.body.email || !req.body.password) {
+                return res.status(400).json({ message: 'Missing required fields' });
+            }
+
+            // Tạo người dùng mới
+            const newUser = new User({
+                username: req.body.username,
+                email: req.body.email,
+                password: req.body.password, // Lưu ý: Nên hash mật khẩu trước khi lưu
+                phoneNumber: req.body.phoneNumber,
+                address: req.body.address,
+            });
+
+            // Lưu người dùng vào cơ sở dữ liệu
+            const savedUser = await newUser.save();
             res.status(201).json(savedUser);
         } catch (error) {
-            res.status(400).json({ message: error.message });
+            console.error('Error creating user:', error); // Log lỗi chi tiết
+            res.status(500).json({ message: error.message });
         }
     },
 
     // Cập nhật người dùng
     updateUser: async (req, res) => {
         try {
-            const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, { new: true }).populate('cartId').populate('orders.foodId');
+            const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
             if (!updatedUser) return res.status(404).json({ message: 'User not found' });
             res.status(200).json(updatedUser);
         } catch (error) {

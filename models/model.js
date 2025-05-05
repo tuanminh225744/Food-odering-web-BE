@@ -57,7 +57,7 @@ const orderSchema = new mongoose.Schema({
 
 // User Schema
 const userSchema = new mongoose.Schema({
-    name: {
+    username: {
         type: String,
         required: true,
         minlength: 3,
@@ -76,11 +76,9 @@ const userSchema = new mongoose.Schema({
     },
     phoneNumber: {
         type: String,
-        required: true,
     },
     address: {
         type: String,
-        required: true,
     },
 });
 
@@ -105,6 +103,7 @@ const cartSchema = new mongoose.Schema({
         },
     ],
 });
+
 
 const Cart = mongoose.model('Cart', cartSchema);
 const Food = mongoose.model('Food', foodSchema);
