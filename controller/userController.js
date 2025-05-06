@@ -1,4 +1,5 @@
 const { Food, Order, User, Cart } = require('../models/model.js');
+const bcrypt = require('bcrypt');
 
 const userController = {
     // Lấy tất cả người dùng
@@ -32,13 +33,18 @@ const userController = {
                 return res.status(400).json({ message: 'Missing required fields' });
             }
 
+            // Hash mật khẩu
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(req.body.password, salt);
+
             // Tạo người dùng mới
             const newUser = new User({
                 username: req.body.username,
                 email: req.body.email,
-                password: req.body.password, // Lưu ý: Nên hash mật khẩu trước khi lưu
+                password: hashedPassword,
                 phoneNumber: req.body.phoneNumber,
                 address: req.body.address,
+                isAdmin: req.body.isAdmin || false, // Mặc định là false nếu không có giá trị
             });
 
             // Lưu người dùng vào cơ sở dữ liệu

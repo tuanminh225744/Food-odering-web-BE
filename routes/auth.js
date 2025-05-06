@@ -7,4 +7,7 @@ router.post('/register', authController.register);
 // Đăng nhập
 router.post('/login', authController.login);
 
+// Refresh token
+router.post('/refresh', authController.refreshToken);
+
 module.exports = router;
